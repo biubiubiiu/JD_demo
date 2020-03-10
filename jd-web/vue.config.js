@@ -1,0 +1,21 @@
+// vue.config.js
+const path = require('path');
+
+module.exports = {
+    configureWebpack: config => {
+        if (process.env.NODE_ENV == 'production') {
+            // 
+        } else {
+            return {
+                resolve: {
+                    alias: {
+                        '@js': path.resolve(__dirname, './src/assets/js'),
+                        '@img': path.resolve(__dirname, './src/assets/img'),
+                        '@css': path.resolve(__dirname, './src/assets/css'),
+                        '@c': path.resolve(__dirname, './src/components'),
+                    }
+                }
+            }
+        }
+    }
+}
