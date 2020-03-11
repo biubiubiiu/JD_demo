@@ -1,6 +1,7 @@
 <template>
   <div class="tool-bar">
-    <div class="tool-bar-item" v-for="(item, index) in toolBarData" :key="index">
+    <div class="tool-bar-item" @click="onChangeFragment(item, index)"
+    v-for="(item, index) in toolBarData" :key="index">
       <img class="tool-bar-item-img" :src="[index === selectedItemIndex ? item.hIcon : item.nIcon]" />
       <!-- 当前p标签的index===选中tab的index的时候，就让img显示高亮图片 -->
       <p
@@ -31,7 +32,7 @@ export default {
         },
         {
           nIcon: require('@img/shopping-n.svg'),
-          hIco: require('@img/shopping-h.svg'),
+          hIcon: require('@img/shopping-h.svg'),
           name: '购物车',
           componentName: 'shopping'
         },
@@ -44,6 +45,12 @@ export default {
       ],
       // 选中的 tab 按钮
       selectedItemIndex: 0
+    }
+  },
+  methods: {
+    onChangeFragment: function (item, index) {
+      this.selectedItemIndex = index
+      this.$emit('onChangeFragment', item.componentName)
     }
   }
 }
