@@ -15,3 +15,25 @@
 .z-index-max {
     z-index: 99999
 }
+
+.z-index-2 {
+    z-index: 2
+}
+
+// 使用 css 实现的三角形
+.caret {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-top: px2rem(8) solid $mainColor;
+    border-left: px2rem(6) solid transparent;
+    border-right: px2rem(6) solid transparent;
+}
+
+// 单行文本
+.single-row-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+}

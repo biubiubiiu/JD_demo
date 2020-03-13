@@ -1,16 +1,24 @@
 <template>
-  <!-- 使用瀑布流布局的商品列表 -->
-  <div class="goods goods-waterfall" :style="{height: goodsViewHeight}">
+  <div
+    class="goods"
+    :class="[layoutClass, {'goods-scroll':isScroll}]"
+    :style="{height: goodsViewHeight}"
+  >
     <div
-      class="goods-item goods-waterfall-item"
+      class="goods-item"
+      :class="layoutItemClass"
       ref="goodsItem"
+      @click="onItemClick(item)"
       v-for="(item, index) in dataSource"
       :key="index"
       :style="goodsItemStyles[index]"
     >
       <img class="goods-item-img" :src="item.img" :style="imgStyles[index]" />
       <div class="goods-item-desc">
-        <p class="goods-item-desc-name text-line-2" :class="{'goods-item-decs-name-hint' : !item.isHave}">
+        <p
+          class="goods-item-desc-name text-line-2"
+          :class="{'goods-item-decs-name-hint' : !item.isHave}"
+        >
           <direct v-if="item.isDirect"></direct>
           <lack v-if="!item.isHave"></lack>
           {{item.name}}
@@ -25,25 +33,83 @@
 </template>
 
 <script>
-import Direct from '@c/items/Direct.vue';
-import Lack from '@c/items/Lack.vue';
+import Direct from "@c/items/Direct.vue";
+import Lack from "@c/items/Lack.vue";
 export default {
   components: {
     Lack,
     Direct
   },
+  props: {
+    // 布局形式
+    // "vertical", "grid", "waterfall"
+    layoutType: {
+      type: String,
+      default: "vertical"
+    },
+    /**
+     * 是否允许单独滑动
+     */
+    isScroll: {
+      type: Boolean,
+      default: true
+    },
+    sort: {
+      type: String,
+      default: "ignore"
+    }
+  },
   created: function() {
     this.initData();
+  },
+  watch: {
+    layoutType: function() {
+      this.initLayout();
+    },
+    sort: function () {
+      this.setSortItemsData();
+    }
   },
   methods: {
     initData: function() {
       this.$http.get("/goods").then(data => {
         this.dataSource = data.list;
-        this.initImgStyles();
-        // 等到dom创建完成后，渲染瀑布流布局
-        this.$nextTick(() => {
-          this.initWaterfall();
-        });
+        this.setSortItemsData();
+        this.initLayout();
+      });
+    },
+    setSortItemsData: function() {
+      switch (this.sort) {
+        case "1":
+          this.sortedDataSource = this.dataSource.slice(0);
+          break;
+        case "1-2":
+          this.getSortItemDataFromKey("price");
+          break;
+        case "1-3":
+          this.getSortItemDataFromKey("volume");
+          break;
+        case "2":
+          this.getSortItemDataFromKey("isHave");
+          break;
+        case "3":
+          this.getSortItemDataFromKey("isDirect");
+          break;
+      }
+    },
+    getSortItemDataFromKey: function(key) {
+      this.sortedDataSource.sort((item1, item2) => {
+        let v1 = item1[key],
+          v2 = item2[key];
+        if (typeof v1 === "boolean") {
+          if (v1) return -1;
+          if (v2) return 1;
+          return 0;
+        }
+        if (parseFloat(v1) >= parseFloat(v2)) {
+          return -1;
+        }
+        return 1;
       });
     },
     /**
@@ -97,12 +163,57 @@ export default {
         }
         this.goodsItemStyles.push(goodsItemStyle);
       });
-      this.goodsViewHeight = Math.max(leftHeightTotal, rightHeightTotal) + "px";
+      if (!this.isScroll) {
+        this.goodsViewHeight =
+          Math.max(leftHeightTotal, rightHeightTotal) + "px";
+      }
+    },
+    /**
+     * 设置布局，为不同的 layoutType 设定不同的展示形式
+     */
+    initLayout: function() {
+      // 初始化
+      this.goodsViewHeight = "100%";
+      this.goodsItemStyles = [];
+      this.imgStyles = [];
+
+      switch (this.layoutType) {
+        case "vertical":
+          this.layoutClass = "goods-vertical";
+          this.layoutItemClass = "goods-vertival-item";
+          break;
+        case "grid":
+          this.layoutClass = "goods-grid";
+          this.layoutItemClass = "goods-grid-item";
+          break;
+        case "waterfall":
+          this.layoutClass = "goods-waterfall";
+          this.layoutItemClass = "goods-waterfall-item";
+          this.initImgStyles();
+          // 等到dom创建完成后，渲染瀑布流布局
+          this.$nextTick(() => {
+            this.initWaterfall();
+          });
+          break;
+      }
+    },
+    onItemClick: function (item) {
+      if (!item.isHave) {
+        alert('该商品无库存');
+        return;
+      }
+      this.$router.push({
+        name: 'ItemDetail',
+        params: {
+          item: item
+        }
+      })
     }
   },
   data: function() {
     return {
       dataSource: [],
+      sortedDataSource: [],
       // 商品图片的最大高度和最小高度
       MAX_IMG_HEIGHT: 230,
       MIN_IMG_HEIGHT: 178,
@@ -111,7 +222,9 @@ export default {
       ITEM_MARGIN_SIZE: 8,
       // 商品样式集合
       goodsItemStyles: [],
-      goodsViewHeight: 0
+      goodsViewHeight: "100%",
+      layoutClass: "goods-vertical",
+      layoutItemClass: "goods-vertical-item"
     };
   }
 };
@@ -121,6 +234,11 @@ export default {
 @import "@css/style.scss";
 .goods {
   background-color: $bgColor;
+
+  &-scroll {
+    overflow: hidden;
+    overflow-y: auto;
+  }
 
   &-item {
     background-color: white;
@@ -157,6 +275,41 @@ export default {
           color: $hintColor;
         }
       }
+    }
+  }
+}
+
+.goods-vertical {
+  &-item {
+    display: flex;
+    border-bottom: 1px solid $lineColor;
+
+    .goods-item-img {
+      width: px2rem(12);
+      height: px2rem(12);
+    }
+
+    .goods-item-desc {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: $marginSize;
+    }
+  }
+}
+
+.goods-grid {
+  padding: $marginSize;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  &-item {
+    width: 49%;
+    border-radius: $radiusSize;
+    margin-bottom: $marginSize;
+
+    .goods-item-img {
+      width: 100%;
     }
   }
 }

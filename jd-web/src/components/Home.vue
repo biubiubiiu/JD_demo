@@ -6,8 +6,8 @@
       </template>
       <template v-slot:nav-center>
         <search
-          :bgColor="navBarCurrentSlotStyle.bgColor"
-          :hintColor="navBarCurrentSlotStyle.hintColor"
+          :bgColor="navBarCurrentSlotStyle.search.bgColor"
+          :hintColor="navBarCurrentSlotStyle.search.hintColor"
           :icon="navBarCurrentSlotStyle.search.icon"
         ></search>
       </template>
@@ -28,11 +28,11 @@
       <seconds :dataSource="secondData"></seconds>
       <activity>
         <div class="activity-pin-gou-jie">
-          <!-- <img src="@img/pinGouJie.gif"/> -->
+          <img src="@img/haoHuoQiang.gif"/>
         </div>
       </activity>
       <!-- 商品列表 -->
-      <item></item>
+      <item :layoutType="'waterfall'" :isScroll="false"></item>
     </div>
   </div>
 </template>
@@ -97,7 +97,7 @@ export default {
     };
   },
   created: function() {
-    this.navBarCurrentSlotStyle = this.navBarSlotStyle;
+    this.navBarCurrentSlotStyle = this.navBarSlotStyle.normal;
     this.initData();
   },
   methods: {

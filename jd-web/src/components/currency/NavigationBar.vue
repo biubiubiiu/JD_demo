@@ -1,6 +1,6 @@
 <template>
   <div class="nav-bar z-index-max" :style="navBarStyle" :class="{'bottom-line':pageName}">
-    <div class="left">
+    <div class="left" @click="$emit('onLeftClick')">
       <img v-if="isShowBack" src="@img/back.svg" />
       <!-- 具名插槽 -->
       <slot name="nav-left"></slot>
@@ -69,6 +69,7 @@ export default {
     .page-title {
       font-size: $titleSize;
       align-self: center;
+      margin: 0 auto
     }
   }
 
