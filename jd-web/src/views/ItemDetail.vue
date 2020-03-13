@@ -13,7 +13,7 @@
       </template>
     </navigation-bar>
     <div class="item-detail-content">
-      <parallax  @onScroll="onScroll">
+      <parallax @onScroll="onScroll">
         <template v-slot:parallax-slow>
           <my-swiper
             :paginationType="'number'"
@@ -68,6 +68,7 @@ import MySwiper from "@c/swiper/MySwiper.vue";
 import Direct from "@c/items/Direct.vue";
 import Parallax from "@c/parallax/Parallax.vue";
 export default {
+  name: "detail",
   components: {
     NavigationBar,
     MySwiper,
@@ -96,10 +97,21 @@ export default {
     },
     onScroll: function(value) {
       this.scrollValue = value;
+    },
+    loadItemData: function() {
+      this.$http
+        .get("/goodsDetail", {
+          params: {
+            goodsId: this.$route.query.itemId
+          }
+        })
+        .then(data => {
+          this.itemData = data.goodsData;
+        });
     }
   },
   created: function() {
-    this.itemData = this.$route.params.item;
+    this.loadItemData();
   },
   computed: {
     /**
@@ -131,6 +143,7 @@ export default {
 <style lang="scss" scoped>
 @import "@css/style.scss";
 .item-detail {
+  position: absolute;
   width: 100%;
   height: 100%;
   display: flex;

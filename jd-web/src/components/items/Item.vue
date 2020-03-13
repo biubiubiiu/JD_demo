@@ -3,6 +3,8 @@
     class="goods"
     :class="[layoutClass, {'goods-scroll':isScroll}]"
     :style="{height: goodsViewHeight}"
+    ref="items"
+    @scroll="onScroll"
   >
     <div
       class="goods-item"
@@ -61,6 +63,9 @@ export default {
   },
   created: function() {
     this.initData();
+  },
+  activated: function (){
+    this.$refs.items.scrollTop = this.scrollTopValue;
   },
   watch: {
     layoutType: function() {
@@ -205,9 +210,15 @@ export default {
       this.$router.push({
         name: 'ItemDetail',
         params: {
-          item: item
+          routerType: 'push'
+        },
+        query: {
+          itemId: item.id
         }
       })
+    },
+    onScroll: function ($event) {
+      this.scrollTopValue = $event.target.scrollTop;
     }
   },
   data: function() {
@@ -224,7 +235,8 @@ export default {
       goodsItemStyles: [],
       goodsViewHeight: "100%",
       layoutClass: "goods-vertical",
-      layoutItemClass: "goods-vertical-item"
+      layoutItemClass: "goods-vertical-item",
+      scrollTopValue: 0
     };
   }
 };

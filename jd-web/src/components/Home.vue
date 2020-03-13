@@ -1,5 +1,5 @@
 <template>
-  <div class="home" @scroll="onScrollChange">
+  <div class="home" @scroll="onScrollChange" ref="home">
     <navigation-bar :isShowBack="false" :navBarStyle="navBarStyle">
       <template v-slot:nav-left>
         <img :src="navBarCurrentSlotStyle.leftIcon" />
@@ -28,7 +28,7 @@
       <seconds :dataSource="secondData"></seconds>
       <activity>
         <div class="activity-pin-gou-jie">
-          <img src="@img/haoHuoQiang.gif"/>
+          <img src="@img/haoHuoQiang.gif" />
         </div>
       </activity>
       <!-- 商品列表 -->
@@ -66,29 +66,29 @@ export default {
       // 包括正常状态和高亮状态
       navBarSlotStyle: {
         normal: {
-          leftIcon: require('@img/more-white.svg'),
+          leftIcon: require("@img/more-white.svg"),
           search: {
-            bgColor: '#ffffff',
-            hintColor: '#999999',
-            icon: require('@img/search.svg')
+            bgColor: "#ffffff",
+            hintColor: "#999999",
+            icon: require("@img/search.svg")
           },
-          rightIcon: require('@img/message-white.svg')
+          rightIcon: require("@img/message-white.svg")
         },
         highlight: {
-          leftIcon: require('@img/more.svg'),
+          leftIcon: require("@img/more.svg"),
           search: {
-            bgColor: '#d7d7d7',
-            hintColor: '#ffffff',
-            icon: require('@img/search-white.svg')
+            bgColor: "#d7d7d7",
+            hintColor: "#ffffff",
+            icon: require("@img/search-white.svg")
           },
-          rightIcon: require('@img/message.svg')
+          rightIcon: require("@img/message.svg")
         }
       },
       // navBar 当前使用的插槽样式
       navBarCurrentSlotStyle: {},
       navBarStyle: {
-        position: 'fixed',
-        backgroundColor: ''
+        position: "fixed",
+        backgroundColor: ""
       },
       // 记录页面滚动值
       scrollTopValue: -1,
@@ -99,6 +99,9 @@ export default {
   created: function() {
     this.navBarCurrentSlotStyle = this.navBarSlotStyle.normal;
     this.initData();
+  },
+  activated: function() {
+    this.$refs.home.scrollTop = this.scrollTopValue;
   },
   methods: {
     // 获取数据
@@ -132,7 +135,7 @@ export default {
       } else {
         this.navBarCurrentSlotStyle = this.navBarSlotStyle.normal;
       }
-      this.navBarStyle.backgroundColor = 'rgba(255, 255, 255, ' + opacity + ')';
+      this.navBarStyle.backgroundColor = "rgba(255, 255, 255, " + opacity + ")";
     }
   }
 };

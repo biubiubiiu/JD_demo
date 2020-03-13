@@ -17,6 +17,7 @@ import NavigationBar from "@c/currency/NavigationBar.vue";
 import ItemOptions from "@c/items/ItemOptions.vue";
 import Item from "@c/items/Item.vue";
 export default {
+  name: 'items',
   components: {
     NavigationBar,
     Item,
@@ -71,6 +72,7 @@ export default {
 <style lang='scss' scoped>
 @import "@css/style.scss";
 .item-list-page {
+  position: absolute;
   height: 100%;
   width: 100%;
   background-color: $bgColor;
