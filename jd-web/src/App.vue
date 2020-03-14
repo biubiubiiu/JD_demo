@@ -34,6 +34,10 @@ export default {
         // 设置切换动画
         this.transitionName = "fold-right";
       }
+
+      if(to.params.clearTaskStack) {
+        this.virtualTaskStack = ['homepage']
+      }
     }
   }
 };

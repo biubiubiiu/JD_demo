@@ -56,7 +56,7 @@
       </parallax>
     </div>
     <div class="item-detail-buy">
-      <div class="item-detail-buy-add">加入购物车</div>
+      <div class="item-detail-buy-add" @click="onAddItemClick()">加入购物车</div>
       <div class="item-detail-buy-now" @click="onBuyClick()">立即购买</div>
     </div>
   </div>
@@ -109,16 +109,29 @@ export default {
           this.itemData = data.goodsData;
         });
     },
-    onBuyClick: function () {
+    onBuyClick: function() {
       this.$router.push({
-        name: 'Pay',
+        name: "Pay",
         params: {
-          routerType: 'push'
+          routerType: "push"
         },
         query: {
           itemId: this.itemData.id
         }
-      })
+      });
+    },
+    onAddItemClick: function() {
+      // @TODO
+      this.$store.commit("addItemToCart", this.itemData);
+      alert("添加成功");
+      // this.$router.push({
+      //   name: 'Home',
+      //   params: {
+      //     routerType: 'push',
+      //     index: 1,
+      //     clearTaskStack: true
+      //   }
+      // })
     }
   },
   created: function() {
