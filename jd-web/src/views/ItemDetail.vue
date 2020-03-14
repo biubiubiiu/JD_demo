@@ -57,7 +57,7 @@
     </div>
     <div class="item-detail-buy">
       <div class="item-detail-buy-add">加入购物车</div>
-      <div class="item-detail-buy-now">立即购买</div>
+      <div class="item-detail-buy-now" @click="onBuyClick()">立即购买</div>
     </div>
   </div>
 </template>
@@ -108,6 +108,17 @@ export default {
         .then(data => {
           this.itemData = data.goodsData;
         });
+    },
+    onBuyClick: function () {
+      this.$router.push({
+        name: 'Pay',
+        params: {
+          routerType: 'push'
+        },
+        query: {
+          itemId: this.itemData.id
+        }
+      })
     }
   },
   created: function() {
